@@ -1,5 +1,7 @@
 //  pre_const_constructors, camel_case_types, prefer_final_fields, non_constant_identifier_names, prefer_const_constructors_in_immutables
 
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -24,6 +26,7 @@ class _mainscreenState extends State<mainscreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.black87,
         title: Text("GetWork"),
       ),
       body: Stack(
@@ -44,7 +47,7 @@ class _mainscreenState extends State<mainscreen> {
               child: Container(
                 height: 245.0,
                 decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Color.fromARGB(255, 192, 188, 188),
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(10.0),
                         topRight: Radius.circular(10.0)),
@@ -61,23 +64,58 @@ class _mainscreenState extends State<mainscreen> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: 24.0, vertical: 18.0),
+
                   // ignore: prefer_const_literals_to_create_immutables
-                  child: Column(children: [
-                    SizedBox(
-                      height: 6.0,
-                    ),
-                    Text(
-                      "Hi there ..",
-                      style: TextStyle(
-                          fontSize: 12.0,
-                          color: Colors.black,
-                          fontFamily: "Brand-Bold"),
-                    ),
-                    Text(
-                      "Where are You !",
-                      style: TextStyle(fontSize: 12.0, color: Colors.black),
-                    )
-                  ]),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 6.0,
+                        ),
+                        Text(
+                          "Hi there ..",
+                          style: TextStyle(
+                              fontSize: 12.0,
+                              color: Colors.black,
+                              fontFamily: "Brand-Bold"),
+                        ),
+                        Text(
+                          "Where are You !",
+                          style: TextStyle(fontSize: 20.0, color: Colors.black),
+                        ),
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                              color: Color.fromARGB(255, 206, 202, 202),
+                              borderRadius: BorderRadius.circular(10.0),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black54,
+                                  blurRadius: 6.0,
+                                  spreadRadius: 0.5,
+                                  offset: Offset(0.7, 0.7),
+                                )
+                              ]),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.search,
+                                color: Colors.black,
+                              ),
+                              SizedBox(
+                                width: 10.0,
+                              ),
+                              Text(
+                                "Search Location ..",
+                                style: TextStyle(
+                                    fontSize: 12.0, fontFamily: "Bold-brand"),
+                              ),
+                            ],
+                          ),
+                        )
+                      ]),
                 ),
               ))
         ],

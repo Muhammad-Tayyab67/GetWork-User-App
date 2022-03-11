@@ -23,8 +23,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        brightness: Brightness.dark,
-        primaryColor: Colors.lightBlue[800],
+        primaryColor: Color.fromARGB(255, 2, 15, 26),
       ),
       initialRoute: mainscreen.idScreen,
       routes: {
