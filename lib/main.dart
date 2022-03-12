@@ -1,5 +1,7 @@
 // ignore: unused_import
 //import 'package:firebas, e_auth/firebase_auth.dart';
+// ignore_for_file: prefer_const_constructors
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -25,10 +27,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primaryColor: Color.fromARGB(255, 2, 15, 26),
       ),
-      initialRoute: mainscreen.idScreen,
+      initialRoute: Loginscreen.idScreen,
       routes: {
         RegisterationScreen.idScreen: (context) => RegisterationScreen(),
-        // ignore: prefer_const_constructors
         Loginscreen.idScreen: (context) => Loginscreen(),
         mainscreen.idScreen: (context) => mainscreen()
       },
