@@ -1,10 +1,11 @@
 //  pre_const_constructors, camel_case_types, prefer_final_fields, non_constant_identifier_names, prefer_const_constructors_in_immutables
 
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, camel_case_types, prefer_final_fields
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, camel_case_types, prefer_final_fields, unnecessary_new
 
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class mainscreen extends StatefulWidget {
@@ -18,6 +19,19 @@ class mainscreen extends StatefulWidget {
 class _mainscreenState extends State<mainscreen> {
   Completer<GoogleMapController> _controllerGooglrMap = Completer();
   late GoogleMapController newgoogleMapController;
+  late Position currentPosition;
+  var geolocator = Geolocator();
+  double bottempadding = 0.0;
+  void locatePosition() async {
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    LatLng latLongposition = LatLng(position.latitude, position.longitude);
+    CameraPosition cameraPosition =
+        new CameraPosition(target: latLongposition, zoom: 14);
+    newgoogleMapController
+        .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+  }
+
   static final CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(37.42796133580664, -122.085749655962),
     zoom: 14.4746,
@@ -99,12 +113,20 @@ class _mainscreenState extends State<mainscreen> {
       body: Stack(
         children: [
           GoogleMap(
+            padding: EdgeInsets.only(bottom: bottempadding),
             mapType: MapType.normal,
             myLocationButtonEnabled: true,
             initialCameraPosition: _kGooglePlex,
+            myLocationEnabled: true,
+            zoomControlsEnabled: true,
+            zoomGesturesEnabled: true,
             onMapCreated: (GoogleMapController Controller) {
               _controllerGooglrMap.complete(Controller);
               newgoogleMapController = Controller;
+              locatePosition();
+              setState(() {
+                bottempadding = 265.0;
+              });
             },
           ),
           Positioned(
