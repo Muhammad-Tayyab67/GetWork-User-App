@@ -1,6 +1,6 @@
 //  pre_const_constructors, camel_case_types, prefer_final_fields, non_constant_identifier_names, prefer_const_constructors_in_immutables
 
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, camel_case_types, prefer_final_fields, unnecessary_new
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, camel_case_types, prefer_final_fields, unnecessary_new, sized_box_for_whitespace
 
 import 'dart:async';
 
@@ -125,7 +125,7 @@ class _mainscreenState extends State<mainscreen> {
               newgoogleMapController = Controller;
               locatePosition();
               setState(() {
-                bottempadding = 265.0;
+                bottempadding = 300.0;
               });
             },
           ),
