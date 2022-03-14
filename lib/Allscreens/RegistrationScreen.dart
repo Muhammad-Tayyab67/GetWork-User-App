@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors, deprecated_member_use, unnecessary_new, prefer_const_constructors_in_immutables, non_constant_identifier_names, use_key_in_widget_constructors
+// ignore_for_file: prefer_const_constructors, deprecated_member_use, unnecessary_new, prefer_const_constructors_in_immutables, non_constant_identifier_names, use_key_in_widget_constructors, file_names, unnecessary_import, sized_box_for_whitespace
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
