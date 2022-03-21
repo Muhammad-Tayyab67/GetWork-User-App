@@ -1,11 +1,12 @@
 //  pre_const_constructors, camel_case_types, prefer_final_fields, non_constant_identifier_names, prefer_const_constructors_in_immutables
 
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, camel_case_types, prefer_final_fields, unnecessary_new, sized_box_for_whitespace, prefer_const_constructors_in_immutables, non_constant_identifier_names, duplicate_ignore
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, camel_case_types, prefer_final_fields, unnecessary_new, sized_box_for_whitespace, prefer_const_constructors_in_immutables, non_constant_identifier_names, duplicate_ignore, unused_local_variable
 
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:getwork/Allscreens/RegistrationScreen.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class mainscreen extends StatefulWidget {
@@ -25,6 +26,31 @@ class _mainscreenState extends State<mainscreen> {
   double bottempadding = 0.0;
 //Current location Function
   void locatePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+// Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        diplaymessage("CINIC should conatain more then 13 Digits", context);
+        // Permissions are denied, next time you could try
+        // requesting permissions again (this is also where
+        // Android's shouldShowRequestPermissionRationale
+        // returned true. According to Android guidelines
+        // your App should show an explanatory UI now.
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
     currentPosition = position;
@@ -36,7 +62,7 @@ class _mainscreenState extends State<mainscreen> {
   }
 
 //Initial Location
-  static const CameraPosition _kGooglePlex = CameraPosition(
+  static final CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(37.42796133580664, -122.085749655962),
     zoom: 14.4746,
   );
@@ -117,8 +143,12 @@ class _mainscreenState extends State<mainscreen> {
       body: Stack(
         children: [
           GoogleMap(
+            myLocationEnabled: true,
             padding: EdgeInsets.only(bottom: bottempadding),
             mapType: MapType.normal,
+            compassEnabled: true,
+            mapToolbarEnabled: true,
+            tiltGesturesEnabled: false,
             initialCameraPosition: _kGooglePlex,
             myLocationButtonEnabled: true,
             zoomControlsEnabled: true,
@@ -131,7 +161,6 @@ class _mainscreenState extends State<mainscreen> {
                 bottempadding = 300.0;
               });
             },
-            myLocationEnabled: true,
           ),
           Positioned(
               left: 0.0,
@@ -216,6 +245,12 @@ class _mainscreenState extends State<mainscreen> {
                 ),
               ))
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          locatePosition();
+        },
+        child: Icon(Icons.location_on),
       ),
     );
   }
