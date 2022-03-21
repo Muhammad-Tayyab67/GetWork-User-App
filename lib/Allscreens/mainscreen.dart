@@ -7,6 +7,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:getwork/Allscreens/RegistrationScreen.dart';
+import 'package:getwork/Assitants/assistantMethods.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class mainscreen extends StatefulWidget {
@@ -22,7 +23,9 @@ class _mainscreenState extends State<mainscreen> {
   late GoogleMapController newgoogleMapController;
 
   late Position currentPosition;
+  String adres = "";
   var geolocator = Geolocator();
+
   double bottempadding = 0.0;
 //Current location Function
   void locatePosition() async {
@@ -59,6 +62,11 @@ class _mainscreenState extends State<mainscreen> {
         new CameraPosition(target: latLatposition, zoom: 14);
     newgoogleMapController
         .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+    //Adress throgh GeoCoding
+    String test = await AssistantMethods.searchCoordinateAddress(position);
+    adres = test;
+    // ignore: avoid_print
+    print("this is location" + test);
   }
 
 //Initial Location
@@ -203,11 +211,13 @@ class _mainscreenState extends State<mainscreen> {
                                 color: Colors.black,
                                 fontFamily: "Brand-Bold"),
                           ),
+                          Divider(),
                           Text(
                             "Where are You !",
                             style:
                                 TextStyle(fontSize: 20.0, color: Colors.black),
                           ),
+                          Divider(),
                           SizedBox(
                             height: 10.0,
                           ),
@@ -239,18 +249,36 @@ class _mainscreenState extends State<mainscreen> {
                                 ),
                               ],
                             ),
+                          ),
+                          SizedBox(
+                            height: 15.0,
+                          ),
+                          Divider(),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.home,
+                                color: Colors.black,
+                              ),
+                              SizedBox(
+                                width: 15.0,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    adres,
+                                    style: TextStyle(fontFamily: "Bold-brand"),
+                                  )
+                                ],
+                              )
+                            ],
                           )
                         ]),
                   ),
                 ),
               ))
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          locatePosition();
-        },
-        child: Icon(Icons.location_on),
       ),
     );
   }
