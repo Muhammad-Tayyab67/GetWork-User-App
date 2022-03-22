@@ -6,6 +6,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:getwork/Allscreens/mainscreen.dart';
+import 'package:getwork/Datahandler/appdata.dart';
+import 'package:provider/provider.dart';
 import 'Allscreens/RegistrationScreen.dart';
 import 'Allscreens/loginscreen.dart';
 
@@ -22,18 +24,21 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primaryColor: Color.fromARGB(255, 2, 15, 26),
+    return ChangeNotifierProvider(
+      create: (context) => AppData(),
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primaryColor: Color.fromARGB(255, 2, 15, 26),
+        ),
+        initialRoute: Loginscreen.idScreen,
+        routes: {
+          RegisterationScreen.idScreen: (context) => RegisterationScreen(),
+          Loginscreen.idScreen: (context) => Loginscreen(),
+          mainscreen.idScreen: (context) => mainscreen()
+        },
+        debugShowCheckedModeBanner: false,
       ),
-      initialRoute: Loginscreen.idScreen,
-      routes: {
-        RegisterationScreen.idScreen: (context) => RegisterationScreen(),
-        Loginscreen.idScreen: (context) => Loginscreen(),
-        mainscreen.idScreen: (context) => mainscreen()
-      },
-      debugShowCheckedModeBanner: false,
     );
   }
 }

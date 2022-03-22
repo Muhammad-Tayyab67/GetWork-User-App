@@ -1,6 +1,6 @@
 //  pre_const_constructors, camel_case_types, prefer_final_fields, non_constant_identifier_names, prefer_const_constructors_in_immutables
 
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, camel_case_types, prefer_final_fields, unnecessary_new, sized_box_for_whitespace, prefer_const_constructors_in_immutables, non_constant_identifier_names, duplicate_ignore, unused_local_variable
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, camel_case_types, prefer_final_fields, unnecessary_new, sized_box_for_whitespace, prefer_const_constructors_in_immutables, non_constant_identifier_names, duplicate_ignore, unused_local_variable, unnecessary_null_comparison
 
 import 'dart:async';
 
@@ -8,7 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:getwork/Allscreens/RegistrationScreen.dart';
 import 'package:getwork/Assitants/assistantMethods.dart';
+import 'package:getwork/Datahandler/appdata.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 
 class mainscreen extends StatefulWidget {
   static const String idScreen = "mian";
@@ -23,7 +25,7 @@ class _mainscreenState extends State<mainscreen> {
   late GoogleMapController newgoogleMapController;
 
   late Position currentPosition;
-  String adres = "";
+  String adres = "Home";
   var geolocator = Geolocator();
 
   double bottempadding = 0.0;
@@ -39,7 +41,7 @@ class _mainscreenState extends State<mainscreen> {
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        diplaymessage("CINIC should conatain more then 13 Digits", context);
+        diplaymessage("Location is not Enabled", context);
         // Permissions are denied, next time you could try
         // requesting permissions again (this is also where
         // Android's shouldShowRequestPermissionRationale
@@ -63,10 +65,8 @@ class _mainscreenState extends State<mainscreen> {
     newgoogleMapController
         .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
     //Adress throgh GeoCoding
-    String test = await AssistantMethods.searchCoordinateAddress(position);
-    adres = test;
-    // ignore: avoid_print
-    print("this is location" + test);
+    String test =
+        await AssistantMethods.searchCoordinateAddress(position, context);
   }
 
 //Initial Location
@@ -267,7 +267,13 @@ class _mainscreenState extends State<mainscreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    adres,
+                                    Provider.of<AppData>(context)
+                                                .pickuplocation !=
+                                            null
+                                        ? Provider.of<AppData>(
+                                            context,
+                                          ).pickuplocation.placeName
+                                        : "Home",
                                     style: TextStyle(fontFamily: "Bold-brand"),
                                   )
                                 ],
