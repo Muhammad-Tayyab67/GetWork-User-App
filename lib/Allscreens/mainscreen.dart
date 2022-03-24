@@ -1,16 +1,14 @@
 //  pre_const_constructors, camel_case_types, prefer_final_fields, non_constant_identifier_names, prefer_const_constructors_in_immutables
 
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, camel_case_types, prefer_final_fields, unnecessary_new, sized_box_for_whitespace, prefer_const_constructors_in_immutables, non_constant_identifier_names, duplicate_ignore, unused_local_variable, unnecessary_null_comparison
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, camel_case_types, prefer_final_fields, unnecessary_new, sized_box_for_whitespace, prefer_const_constructors_in_immutables, non_constant_identifier_names, duplicate_ignore, unused_local_variable, unnecessary_null_comparison, import_of_legacy_library_into_null_safe, prefer_typing_uninitialized_variables
 
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:getwork/Allscreens/RegistrationScreen.dart';
-import 'package:getwork/Assitants/assistantMethods.dart';
-import 'package:getwork/Datahandler/appdata.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:provider/provider.dart';
 
 class mainscreen extends StatefulWidget {
   static const String idScreen = "mian";
@@ -25,7 +23,8 @@ class _mainscreenState extends State<mainscreen> {
   late GoogleMapController newgoogleMapController;
 
   late Position currentPosition;
-  String adres = "Home";
+  String currentAddress = 'My Address';
+
   var geolocator = Geolocator();
 
   double bottempadding = 0.0;
@@ -64,9 +63,17 @@ class _mainscreenState extends State<mainscreen> {
         new CameraPosition(target: latLatposition, zoom: 14);
     newgoogleMapController
         .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-    //Adress throgh GeoCoding
-    String test =
-        await AssistantMethods.searchCoordinateAddress(position, context);
+
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(position.latitude, position.longitude);
+
+    Placemark place = placemarks[0];
+    setState(() {
+      currentAddress =
+          "${place.street},${place.locality}, ${place.postalCode}, ${place.country}";
+    });
+
+    //print("${first.featureName} : ${first.addressLine}");
   }
 
 //Initial Location
@@ -267,13 +274,7 @@ class _mainscreenState extends State<mainscreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    Provider.of<AppData>(context)
-                                                .pickuplocation !=
-                                            null
-                                        ? Provider.of<AppData>(
-                                            context,
-                                          ).pickuplocation.placeName
-                                        : "Home",
+                                    currentAddress,
                                     style: TextStyle(fontFamily: "Bold-brand"),
                                   )
                                 ],
