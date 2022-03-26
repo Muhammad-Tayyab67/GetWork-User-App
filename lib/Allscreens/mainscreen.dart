@@ -4,10 +4,14 @@
 
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:getwork/Allscreens/RegistrationScreen.dart';
+import 'package:getwork/Allscreens/searchScreen.dart';
+import 'package:getwork/Datahandler/appdata.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 
 import '../Assitants/FetchingAddress.dart';
 
@@ -227,33 +231,42 @@ class _mainscreenState extends State<mainscreen> {
                           SizedBox(
                             height: 10.0,
                           ),
-                          Container(
-                            decoration: BoxDecoration(
-                                color: Color.fromARGB(255, 206, 202, 202),
-                                borderRadius: BorderRadius.circular(10.0),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Color.fromARGB(137, 139, 134, 134),
-                                    blurRadius: 6.0,
-                                    spreadRadius: 0.5,
-                                    offset: Offset(0.7, 0.7),
-                                  )
-                                ]),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.search,
-                                  color: Colors.black,
-                                ),
-                                SizedBox(
-                                  width: 10.0,
-                                ),
-                                Text(
-                                  "Search Location ..",
-                                  style: TextStyle(
-                                      fontSize: 12.0, fontFamily: "Bold-brand"),
-                                ),
-                              ],
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => SearchScreen()));
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: Color.fromARGB(255, 206, 202, 202),
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Color.fromARGB(137, 139, 134, 134),
+                                      blurRadius: 6.0,
+                                      spreadRadius: 0.5,
+                                      offset: Offset(0.7, 0.7),
+                                    )
+                                  ]),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.search,
+                                    color: Colors.black,
+                                  ),
+                                  SizedBox(
+                                    width: 10.0,
+                                  ),
+                                  Text(
+                                    "Search Location ..",
+                                    style: TextStyle(
+                                        fontSize: 12.0,
+                                        fontFamily: "Bold-brand"),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                           SizedBox(
@@ -273,14 +286,14 @@ class _mainscreenState extends State<mainscreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    // Provider.of<AppData>(context)
-                                    //             .pickuplocation !=
-                                    //         null
-                                    //     ? Provider.of<AppData>(context)
-                                    //         .pickuplocation
-                                    //         .placeName
-                                    //     : "HOME ADDRESS",
-                                    currentAddress,
+                                    Provider.of<AppData>(context)
+                                                .pickuplocation !=
+                                            null
+                                        ? Provider.of<AppData>(context)
+                                            .pickuplocation
+                                            .placeName
+                                        : "HOME ADDRESS",
+                                    //currentAddress,
                                     overflow: TextOverflow.visible,
                                     style: TextStyle(
                                         fontFamily: "Bold-brand",

@@ -75,6 +75,7 @@ flutter:
   assets:
      - images/logo2.jpeg
      - images/sexylogo.jpeg
+     - images/currentlocation.png
      
 
   # An image asset can refer to one or more resolution-specific "variants", see
