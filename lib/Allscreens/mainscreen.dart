@@ -5,10 +5,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:getwork/Allscreens/RegistrationScreen.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+import '../Assitants/FetchingAddress.dart';
 
 class mainscreen extends StatefulWidget {
   static const String idScreen = "mian";
@@ -63,17 +64,15 @@ class _mainscreenState extends State<mainscreen> {
         new CameraPosition(target: latLatposition, zoom: 14);
     newgoogleMapController
         .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+    // List<Placemark> placemarks =
+    //     await placemarkFromCoordinates(position.latitude, position.longitude);
 
-    List<Placemark> placemarks =
-        await placemarkFromCoordinates(position.latitude, position.longitude);
-
-    Placemark place = placemarks[0];
+    // Placemark place = placemarks[0];
+    String Address =
+        await AssistantMethods.searchCoordinateAddress(position, context);
     setState(() {
-      currentAddress =
-          "${place.street},${place.locality}, ${place.postalCode}, ${place.country}";
+      currentAddress = Address;
     });
-
-    //print("${first.featureName} : ${first.addressLine}");
   }
 
 //Initial Location
@@ -274,8 +273,18 @@ class _mainscreenState extends State<mainscreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
+                                    // Provider.of<AppData>(context)
+                                    //             .pickuplocation !=
+                                    //         null
+                                    //     ? Provider.of<AppData>(context)
+                                    //         .pickuplocation
+                                    //         .placeName
+                                    //     : "HOME ADDRESS",
                                     currentAddress,
-                                    style: TextStyle(fontFamily: "Bold-brand"),
+                                    overflow: TextOverflow.visible,
+                                    style: TextStyle(
+                                        fontFamily: "Bold-brand",
+                                        fontSize: 11.0),
                                   )
                                 ],
                               )
