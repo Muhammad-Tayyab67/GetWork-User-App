@@ -24,8 +24,7 @@ class AssistantMethods {
     pickupaddress.placeName = placeAddress;
     Provider.of<AppData>(context, listen: false)
         .updatepicklocation(pickupaddress);
-    Provider.of<AppData>(context, listen: false)
-        .updatepicklocation(pickupaddress);
+
     return placeAddress;
   }
 }

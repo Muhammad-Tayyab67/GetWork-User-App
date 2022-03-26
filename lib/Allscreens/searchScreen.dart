@@ -51,7 +51,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       Icon(Icons.arrow_back),
                       Center(
                         child: Text(
-                          "Set Drop Off",
+                          "LOCATION",
                           style: TextStyle(
                               fontSize: 16.0, fontFamily: "Brand-Bold"),
                         ),
