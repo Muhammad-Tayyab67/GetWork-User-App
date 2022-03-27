@@ -28,7 +28,6 @@ class _mainscreenState extends State<mainscreen> {
   late GoogleMapController newgoogleMapController;
 
   late Position currentPosition;
-  String currentAddress = 'My Address';
 
   var geolocator = Geolocator();
 
@@ -68,15 +67,9 @@ class _mainscreenState extends State<mainscreen> {
         new CameraPosition(target: latLatposition, zoom: 14);
     newgoogleMapController
         .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-    // List<Placemark> placemarks =
-    //     await placemarkFromCoordinates(position.latitude, position.longitude);
 
-    // Placemark place = placemarks[0];
     String Address =
         await AssistantMethods.searchCoordinateAddress(position, context);
-    setState(() {
-      currentAddress = Address;
-    });
   }
 
 //Initial Location

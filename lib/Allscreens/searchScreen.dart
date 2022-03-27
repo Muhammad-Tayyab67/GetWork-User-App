@@ -1,8 +1,8 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_constructors_in_immutables
-
-import 'dart:ui';
+// ignore_for_file: prefer_const_constructors, prefer_const_constructors_in_immutables, file_names
 
 import 'package:flutter/material.dart';
+import 'package:getwork/Assitants/requestAssitant.dart';
+import 'package:getwork/Config.dart';
 import 'package:provider/provider.dart';
 
 import '../Datahandler/appdata.dart';
@@ -18,6 +18,7 @@ class _SearchScreenState extends State<SearchScreen> {
   TextEditingController currentlocation = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    // ignore: unnecessary_null_comparison
     String myadres = Provider.of<AppData>(context).pickuplocation != null
         ? Provider.of<AppData>(context).pickuplocation.placeName
         : "";
@@ -80,6 +81,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         child: Padding(
                           padding: EdgeInsets.all(3.0),
                           child: TextField(
+                            onChanged: (value) => {findPlaces(value)},
                             controller: currentlocation,
                             decoration: InputDecoration(
                                 hintText: "Search Location",
@@ -101,5 +103,19 @@ class _SearchScreenState extends State<SearchScreen> {
         ],
       ),
     );
+  }
+}
+
+void findPlaces(String places) async {
+  if (places.length > 1) {
+    String placeUrl =
+        "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$places&key=$Mapkey&sessiontoken=1234567890";
+    var response = await RequestAssitant.getRequest(placeUrl);
+    if (response == "failed") {
+      return;
+    } else {
+      print("Locations are ..");
+      print(response);
+    }
   }
 }
