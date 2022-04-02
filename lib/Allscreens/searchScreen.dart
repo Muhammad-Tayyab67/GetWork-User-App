@@ -1,9 +1,13 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_constructors_in_immutables, file_names
 
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:getwork/Assitants/requestAssitant.dart';
 import 'package:getwork/Config.dart';
+import 'package:google_maps_webservice/places.dart';
 import 'package:provider/provider.dart';
+import 'package:google_maps_webservice/directions.dart';
+import 'package:flutter_google_places/flutter_google_places.dart';
 
 import '../Datahandler/appdata.dart';
 
@@ -23,6 +27,8 @@ class _SearchScreenState extends State<SearchScreen> {
         ? Provider.of<AppData>(context).pickuplocation.placeName
         : "";
     currentlocation.text = myadres;
+    var place;
+
     return Scaffold(
       body: Column(
         children: [
@@ -81,17 +87,21 @@ class _SearchScreenState extends State<SearchScreen> {
                         child: Padding(
                           padding: EdgeInsets.all(3.0),
                           child: TextField(
-                            onChanged: (value) => {findPlaces(value)},
-                            controller: currentlocation,
-                            decoration: InputDecoration(
-                                hintText: "Search Location",
-                                fillColor: Color.fromARGB(255, 204, 204, 204),
-                                isDense: true,
-                                filled: true,
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.only(
-                                    left: 11.0, bottom: 8.0, top: 8.0)),
-                          ),
+                              onTap: () async => {
+                                    place = await PlacesAutocomplete.show(
+                                        context: context,
+                                        apiKey: Mapkey,
+                                        mode: Mode.overlay,
+                                        types: [],
+                                        strictbounds: false,
+                                        components: [
+                                          Component(Component.country, 'pk')
+                                        ],
+                                        //google_map_webservice package
+                                        onError: (err) {
+                                          print(err);
+                                        }),
+                                  }),
                         ),
                       ))
                     ],
@@ -99,23 +109,23 @@ class _SearchScreenState extends State<SearchScreen> {
                 ],
               ),
             ),
-          )
+          ),
         ],
       ),
     );
   }
 }
 
-void findPlaces(String places) async {
-  if (places.length > 1) {
-    String placeUrl =
-        "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$places&key=$Mapkey&sessiontoken=1234567890";
-    var response = await RequestAssitant.getRequest(placeUrl);
-    if (response == "failed") {
-      return;
-    } else {
-      print("Locations are ..");
-      print(response);
-    }
-  }
+void findPlaces(context) async {
+  // if (places.length > 1) {
+  //   String placeUrl =
+  //       "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$places&key=$Mapkey&sessiontoken=1234567890";
+  //   var response = await RequestAssitant.getRequest(placeUrl);
+  //   if (response == "failed") {
+  //     return;
+  //   } else {
+  //     print("Locations are ..");
+  //     print(response);
+  //   }
+  // }
 }

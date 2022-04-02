@@ -299,7 +299,59 @@ class _mainscreenState extends State<mainscreen> {
                         ]),
                   ),
                 ),
-              ))
+              )),
+          Positioned(
+            left: 0.0,
+            right: 0.0,
+            bottom: 0.0,
+            child: Container(
+              height: 245.0,
+              decoration: BoxDecoration(
+                  color: Color.fromARGB(255, 233, 228, 228),
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10.0),
+                      topRight: Radius.circular(10.0)),
+                  // ignore: prefer_const_literals_to_create_immutables
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black,
+                      blurRadius: 16.0,
+                      spreadRadius: 0.5,
+                      offset: Offset(0.7, 0.7),
+                    )
+                  ]),
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Column(
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      color: Colors.tealAccent,
+                      child: Row(
+                        children: [
+                          Icon(Icons.male),
+                          SizedBox(
+                            width: 55.0,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Labour",
+                                style: TextStyle(
+                                    fontFamily: "Brand-Bold", fontSize: 20.0),
+                                textAlign: TextAlign.justify,
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
