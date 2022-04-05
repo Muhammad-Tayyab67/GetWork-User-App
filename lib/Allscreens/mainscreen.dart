@@ -81,16 +81,29 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
   double searchconatainerHt = 245.0;
   double labourContainerHt = 0.0;
   double requestContainerHT = 0.0;
-  void switchcontainer() {
-    if (labourContainerHt == 285.0) {
-      setState(() {
-        requestContainerHT = 300.0;
-      });
-    } else {
-      setState(() {
-        searchconatainerHt = 0.0;
-        labourContainerHt = 285.0;
-      });
+
+  void switchcontainer(String x) {
+    switch (x) {
+      case "search":
+        {
+          searchconatainerHt = 245.0;
+          labourContainerHt = 0.0;
+          requestContainerHT = 0.0;
+          break;
+        }
+      case "labr":
+        {
+          labourContainerHt = 300.0;
+          searchconatainerHt = 0.0;
+          requestContainerHT = 0.0;
+          break;
+        }
+      case "req":
+        {
+          requestContainerHT = 300.0;
+          searchconatainerHt = 0.0;
+          labourContainerHt = 0.0;
+        }
     }
   }
 
@@ -291,7 +304,7 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
                             Divider(),
                             GestureDetector(
                               onTap: () {
-                                switchcontainer();
+                                switchcontainer("labr");
                               },
                               child: Row(
                                 children: [
@@ -387,7 +400,7 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
                             ),
                             GestureDetector(
                               onTap: () {
-                                switchcontainer();
+                                switchcontainer("req");
                               },
                               child: Icon(
                                 Icons.send,
@@ -429,7 +442,7 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
                               ),
                               GestureDetector(
                                 onTap: () {
-                                  switchcontainer();
+                                  switchcontainer("req");
                                 },
                                 child: Icon(
                                   Icons.send,
@@ -472,7 +485,7 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
                               ),
                               GestureDetector(
                                 onTap: () {
-                                  switchcontainer();
+                                  switchcontainer("req");
                                 },
                                 child: Icon(
                                   Icons.send,
@@ -537,18 +550,23 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
                       SizedBox(
                         height: 20.0,
                       ),
-                      Container(
-                        height: 80.0,
-                        width: 80.0,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30.0),
-                          border: Border.all(
-                              width: 2.0,
-                              color: Color.fromARGB(255, 141, 137, 137)),
-                        ),
-                        child: Icon(
-                          Icons.close,
-                          size: 50.0,
+                      GestureDetector(
+                        onTap: () {
+                          switchcontainer("search");
+                        },
+                        child: Container(
+                          height: 80.0,
+                          width: 80.0,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30.0),
+                            border: Border.all(
+                                width: 2.0,
+                                color: Color.fromARGB(255, 141, 137, 137)),
+                          ),
+                          child: Icon(
+                            Icons.close,
+                            size: 50.0,
+                          ),
                         ),
                       ),
                       SizedBox(
