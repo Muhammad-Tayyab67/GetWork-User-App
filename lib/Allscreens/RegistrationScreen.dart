@@ -14,7 +14,6 @@ import '../AllWidgets/progressDialog.dart';
 // ignore: must_be_immutable
 class RegisterationScreen extends StatelessWidget {
   final _auth = FirebaseAuth.instance;
-  final _formKey = GlobalKey<FormState>();
   static const String idScreen = "register";
   TextEditingController fnameTextEditingController = TextEditingController();
   TextEditingController lnameTextEditingController = TextEditingController();

@@ -1,5 +1,7 @@
 // ignore_for_file: deprecated_member_use, prefer_const_constructors, unused_import, sized_box_for_whitespace
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart'
     show
         Alignment,
@@ -10,9 +12,11 @@ import 'package:flutter/material.dart'
         Container,
         EdgeInsets,
         FlatButton,
+        Icons,
         Image,
         InputDecoration,
         Key,
+        MaterialPageRoute,
         Navigator,
         Padding,
         RaisedButton,
@@ -28,6 +32,7 @@ import 'package:flutter/material.dart'
         TextStyle,
         Widget,
         showDialog;
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:getwork/AllWidgets/progressDialog.dart';
 import 'package:getwork/Allscreens/RegistrationScreen.dart';
 import 'package:getwork/Allscreens/mainscreen.dart';
@@ -35,7 +40,11 @@ import 'package:getwork/main.dart';
 
 class Loginscreen extends StatelessWidget {
   static const String idScreen = "login";
-  const Loginscreen({Key? key}) : super(key: key);
+
+  Loginscreen({Key? key}) : super(key: key);
+  final _auth = FirebaseAuth.instance;
+  TextEditingController emailTextEditingController = TextEditingController();
+  TextEditingController passTextEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +67,9 @@ class Loginscreen extends StatelessWidget {
                 child: (Column(children: [
                   TextField(
                     keyboardType: TextInputType.emailAddress,
+                    controller: emailTextEditingController,
                     decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.mail),
                         labelText: "Email",
                         labelStyle: TextStyle(fontSize: 14.0),
                         hintStyle:
@@ -67,7 +78,9 @@ class Loginscreen extends StatelessWidget {
                   ),
                   TextField(
                     obscureText: true,
+                    controller: passTextEditingController,
                     decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.vpn_key),
                         labelText: "Password",
                         labelStyle: TextStyle(fontSize: 14.0),
                         hintStyle:
@@ -79,16 +92,15 @@ class Loginscreen extends StatelessWidget {
                   ),
                   RaisedButton(
                     onPressed: () {
-                      showDialog(
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (BuildContext context) {
-                            return ProgressDialog(
-                              message: "Please Wait . . . .",
-                            );
-                          });
-                      Navigator.pushNamedAndRemoveUntil(
-                          context, mainscreen.idScreen, (route) => false);
+                      if (emailTextEditingController.text == null ||
+                          !emailTextEditingController.text.contains("@")) {
+                        Fluttertoast.showToast(msg: "Incorrect Email.");
+                      } else if (passTextEditingController.text.length < 3) {
+                        Fluttertoast.showToast(msg: "Incorrect Password.");
+                      } else {
+                        signin(emailTextEditingController.text,
+                            passTextEditingController.text, context);
+                      }
                     },
                     color: Colors.black,
                     textColor: Colors.white,
@@ -124,5 +136,29 @@ class Loginscreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void signin(String email, String password, BuildContext context) async {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return ProgressDialog(
+            message: "Loging in.. Please Wait . . . .",
+          );
+        });
+    try {
+      await _auth
+          .signInWithEmailAndPassword(email: email, password: password)
+          .then((uid) => {
+                Fluttertoast.showToast(msg: "Login Successful"),
+                Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => mainscreen())),
+              });
+    } catch (er) {
+      Fluttertoast.showToast(msg: er.toString());
+      Navigator.pop(context);
+      print(er);
+    }
   }
 }

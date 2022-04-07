@@ -5,15 +5,21 @@
 import 'dart:async';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:getwork/Allscreens/RegistrationScreen.dart';
+import 'package:getwork/Allscreens/loginscreen.dart';
 import 'package:getwork/Allscreens/searchScreen.dart';
 import 'package:getwork/Datahandler/appdata.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
+import '../AllWidgets/progressDialog.dart';
 import '../Assitants/FetchingAddress.dart';
+import '../Models/Users.dart';
 
 class mainscreen extends StatefulWidget {
   static const String idScreen = "mian";
@@ -114,6 +120,22 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
     }
   }
 
+  //initial state to retrieve Logedin user Details
+  User? user = FirebaseAuth.instance.currentUser;
+  UserModel loggedInUser = UserModel();
+  @override
+  void initState() {
+    super.initState();
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(user!.uid)
+        .get()
+        .then((value) {
+      this.loggedInUser = UserModel.fromMap(value.data());
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -151,14 +173,14 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
                             height: 25.0,
                           ),
                           Text(
-                            "User Name",
+                            "${loggedInUser.firstName}",
                             style: TextStyle(fontSize: 18.0),
                           ),
                           SizedBox(
                             height: 10.0,
                           ),
                           Text(
-                            "Email ",
+                            "${loggedInUser.email} ",
                             style: TextStyle(fontSize: 15.0),
                           )
                         ],
@@ -170,7 +192,7 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
               Divider(),
               SizedBox(height: 10.0),
               ListTile(
-                title: Text("Acount"),
+                title: Text("${loggedInUser.email}"),
                 subtitle: Text("edit acount"),
                 leading: Icon(Icons.person),
                 trailing: Icon(Icons.edit),
@@ -183,6 +205,13 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
               ListTile(
                 title: Text("About"),
                 leading: Icon(Icons.account_box_rounded),
+              ),
+              ListTile(
+                title: Text("Logout"),
+                leading: Icon(Icons.logout_rounded),
+                onTap: () {
+                  logout(context);
+                },
               )
             ],
           ),
@@ -549,9 +578,7 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
                             WavyAnimatedText('Looking For The Labour'),
                           ],
                           isRepeatingAnimation: true,
-                          onTap: () {
-                            print("Tap Event");
-                          },
+                          onTap: () {},
                         ),
                       ),
                       SizedBox(
@@ -594,5 +621,25 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
         ],
       ),
     );
+  }
+
+  Future<void> logout(BuildContext context) async {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return ProgressDialog(
+            message: "Loging in.. Please Wait . . . .",
+          );
+        });
+    try {
+      await FirebaseAuth.instance.signOut();
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => Loginscreen()));
+    } catch (er) {
+      Fluttertoast.showToast(msg: er.toString());
+      Navigator.pop(context);
+      print(er);
+    }
   }
 }
