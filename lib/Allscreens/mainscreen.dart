@@ -86,23 +86,30 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
     switch (x) {
       case "search":
         {
-          searchconatainerHt = 245.0;
-          labourContainerHt = 0.0;
-          requestContainerHT = 0.0;
+          setState(() {
+            searchconatainerHt = 245.0;
+            labourContainerHt = 0.0;
+            requestContainerHT = 0.0;
+          });
           break;
         }
       case "labr":
         {
-          labourContainerHt = 300.0;
-          searchconatainerHt = 0.0;
-          requestContainerHT = 0.0;
+          setState(() {
+            labourContainerHt = 300.0;
+            searchconatainerHt = 0.0;
+            requestContainerHT = 0.0;
+          });
           break;
         }
       case "req":
         {
-          requestContainerHT = 300.0;
-          searchconatainerHt = 0.0;
-          labourContainerHt = 0.0;
+          setState(() {
+            requestContainerHT = 300.0;
+            searchconatainerHt = 0.0;
+            labourContainerHt = 0.0;
+          });
+          break;
         }
     }
   }

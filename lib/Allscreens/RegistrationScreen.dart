@@ -1,16 +1,20 @@
 // ignore_for_file: prefer_const_constructors, deprecated_member_use, unnecessary_new, prefer_const_constructors_in_immutables, non_constant_identifier_names, use_key_in_widget_constructors, file_names, unnecessary_import, sized_box_for_whitespace
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:getwork/Allscreens/loginscreen.dart';
-import 'package:getwork/main.dart';
+import 'package:getwork/Models/Users.dart';
 
 import '../AllWidgets/progressDialog.dart';
 
 // ignore: must_be_immutable
 class RegisterationScreen extends StatelessWidget {
+  final _auth = FirebaseAuth.instance;
+  final _formKey = GlobalKey<FormState>();
   static const String idScreen = "register";
   TextEditingController fnameTextEditingController = TextEditingController();
   TextEditingController lnameTextEditingController = TextEditingController();
@@ -143,17 +147,8 @@ class RegisterationScreen extends StatelessWidget {
                             "Email should conatain more then @gmail.. alphabets",
                             context);
                       } else {
-                        RegisterUser(context);
-                        showDialog(
-                            context: context,
-                            barrierDismissible: false,
-                            builder: (BuildContext context) {
-                              return ProgressDialog(
-                                message: "Please Wait . . . .",
-                              );
-                            });
-                        Navigator.pushNamedAndRemoveUntil(
-                            context, Loginscreen.idScreen, (route) => false);
+                        signUp(emailTextEditingController.text,
+                            passTextEditingController.text, context);
                       }
                     },
                     color: Colors.black,
@@ -191,31 +186,52 @@ class RegisterationScreen extends StatelessWidget {
     );
   }
 
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  void RegisterUser(BuildContext context) async {
-    final User? fireBaseUser = (await _firebaseAuth
-            .createUserWithEmailAndPassword(
-                email: emailTextEditingController.text,
-                password: passTextEditingController.text)
-            .catchError((onError) {
-      Navigator.pop(context);
-      diplaymessage(onError.toString(), context);
-    }))
-        .user;
-    if (fireBaseUser != null) {
-      Map userDataMap = {
-        "First_Name": fnameTextEditingController.text.trim(),
-        "Last_Name": lnameTextEditingController.text.trim(),
-        "CNIC": cnicTextEditingController.text.trim(),
-        "Mobile": mobileTextEditingController.text.trim(),
-        "Address": cityTextEditingController.text.trim()
-      };
-      userRef.child(fireBaseUser.uid).set(userDataMap);
+  void signUp(String email, String password, BuildContext context) async {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return ProgressDialog(
+            message: "Please Wait . . . .",
+          );
+        });
 
-      diplaymessage("Congatulation your Registeration is Done", context);
-    } else {
-      diplaymessage("Fialed To Create your Acount", context);
-    }
+    await _auth
+        .createUserWithEmailAndPassword(email: email, password: password)
+        .then((value) => {postDetailsToFirestore(context)})
+        .catchError((e) {
+      diplaymessage(e.toString(), context);
+    });
+  }
+
+  postDetailsToFirestore(BuildContext context) async {
+    // calling our firestore
+    // calling our user model
+    // sedning these values
+
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    User? user = _auth.currentUser;
+
+    UserModel userModel = UserModel();
+
+    // writing all the values
+    userModel.email = user!.email;
+    userModel.uid = user.uid;
+    userModel.firstName = fnameTextEditingController.text;
+    userModel.lastName = lnameTextEditingController.text;
+    userModel.cityName = cityTextEditingController.text;
+    userModel.cnic = cnicTextEditingController.text;
+    userModel.mobileNo = mobileTextEditingController.text;
+    userModel.password = passTextEditingController.text;
+
+    await firebaseFirestore
+        .collection("users")
+        .doc(user.uid)
+        .set(userModel.toMap());
+    Fluttertoast.showToast(msg: "Account created successfully :) ");
+
+    Navigator.pushNamedAndRemoveUntil(
+        context, Loginscreen.idScreen, (route) => false);
   }
 }
 

@@ -13,7 +13,7 @@ class ProgressDialog extends StatelessWidget {
         margin: EdgeInsets.all(15.0),
         width: double.infinity,
         decoration: BoxDecoration(
-            color: Color.fromARGB(255, 7, 42, 197),
+            color: Color.fromARGB(255, 32, 32, 32),
             borderRadius: BorderRadius.circular(5.0)),
         child: Padding(
           padding: const EdgeInsets.all(15.0),
@@ -30,7 +30,10 @@ class ProgressDialog extends StatelessWidget {
               ),
               Text(
                 message,
-                style: TextStyle(color: Colors.black, fontSize: 10.0),
+                style: TextStyle(
+                    color: Color.fromARGB(255, 253, 253, 253),
+                    fontSize: 12.0,
+                    fontFamily: "Brand-Regular"),
               )
             ],
           ),
