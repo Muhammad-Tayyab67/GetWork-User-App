@@ -12,6 +12,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:getwork/Allscreens/RegistrationScreen.dart';
 import 'package:getwork/Allscreens/loginscreen.dart';
+import 'package:getwork/Allscreens/profilePage.dart';
 import 'package:getwork/Allscreens/searchScreen.dart';
 import 'package:getwork/Datahandler/appdata.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -196,6 +197,13 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
                 subtitle: Text("edit acount"),
                 leading: Icon(Icons.person),
                 trailing: Icon(Icons.edit),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              ProfilePage(loggedInuser: loggedInUser)));
+                },
               ),
               ListTile(
                 title: Text("History"),
