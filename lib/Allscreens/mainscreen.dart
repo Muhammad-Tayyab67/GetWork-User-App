@@ -201,8 +201,9 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>
-                              ProfilePage(loggedInuser: loggedInUser)));
+                          builder: (context) => ProfilePage(
+                                edituser: loggedInUser,
+                              )));
                 },
               ),
               ListTile(

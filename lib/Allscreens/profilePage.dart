@@ -1,32 +1,27 @@
-// ignore_for_file: unnecessary_new, prefer_const_constructors, avoid_unnecessary_containers
+// ignore_for_file: unnecessary_new, prefer_const_constructors, prefer_const_literals_to_create_immutables
 
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:getwork/Allscreens/RegistrationScreen.dart';
+import 'package:getwork/Allscreens/mainscreen.dart';
 import 'package:getwork/Models/Users.dart';
 
 class ProfilePage extends StatefulWidget {
-  final UserModel loggedInuser;
-  const ProfilePage({Key? key, required this.loggedInuser}) : super(key: key);
+  final UserModel edituser;
+  const ProfilePage({Key? key, required this.edituser}) : super(key: key);
 
   @override
-  State<ProfilePage> createState() => MapScreenState();
+  State<ProfilePage> createState() => _ProfilePageState();
 }
 
-class MapScreenState extends State<ProfilePage>
+class _ProfilePageState extends State<ProfilePage>
     with SingleTickerProviderStateMixin {
   bool _status = true;
-  String name = "";
   final FocusNode myFocusNode = FocusNode();
 
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    return Scaffold(
         body: new Container(
       color: Colors.white,
       child: new ListView(
@@ -43,15 +38,20 @@ class MapScreenState extends State<ProfilePage>
                         child: new Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            // ignore: prefer_const_constructors
-                            new Icon(
-                              Icons.arrow_back_rounded,
-                              color: Colors.black,
-                              size: 22.0,
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamedAndRemoveUntil(context,
+                                    mainscreen.idScreen, (route) => false);
+                              },
+                              child: const Icon(
+                                Icons.arrow_back_ios,
+                                color: Colors.black,
+                                size: 22.0,
+                              ),
                             ),
                             Padding(
                               padding: EdgeInsets.only(left: 25.0),
-                              child: new Text('PROFILE',
+                              child: Text('${widget.edituser.firstName}',
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 20.0,
@@ -70,10 +70,10 @@ class MapScreenState extends State<ProfilePage>
                             new Container(
                                 width: 140.0,
                                 height: 140.0,
-                                decoration: new BoxDecoration(
+                                decoration: const BoxDecoration(
                                   shape: BoxShape.circle,
-                                  image: new DecorationImage(
-                                    image: new ExactAssetImage('images/as.png'),
+                                  image: DecorationImage(
+                                    image: ExactAssetImage('images/as.png'),
                                     fit: BoxFit.cover,
                                   ),
                                 )),
@@ -84,10 +84,10 @@ class MapScreenState extends State<ProfilePage>
                             child: new Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                new CircleAvatar(
+                                const CircleAvatar(
                                   backgroundColor: Colors.red,
                                   radius: 25.0,
-                                  child: new Icon(
+                                  child: Icon(
                                     Icons.camera_alt,
                                     color: Colors.white,
                                   ),
@@ -117,8 +117,9 @@ class MapScreenState extends State<ProfilePage>
                               new Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.min,
+                                // ignore: prefer_const_literals_to_create_immutables
                                 children: <Widget>[
-                                  new Text(
+                                  Text(
                                     'Parsonal Information',
                                     style: TextStyle(
                                         fontSize: 18.0,
@@ -136,6 +137,7 @@ class MapScreenState extends State<ProfilePage>
                             ],
                           )),
                       Padding(
+                          // ignore: prefer_const_constructors
                           padding: EdgeInsets.only(
                               left: 25.0, right: 25.0, top: 25.0),
                           child: new Row(
@@ -164,7 +166,7 @@ class MapScreenState extends State<ProfilePage>
                               new Flexible(
                                 child: new TextField(
                                   decoration: const InputDecoration(
-                                    hintText: "Enter Your Name",
+                                    hintText: "Enter Name",
                                   ),
                                   enabled: !_status,
                                   autofocus: !_status,
@@ -181,8 +183,9 @@ class MapScreenState extends State<ProfilePage>
                               new Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.min,
+                                // ignore: prefer_const_literals_to_create_immutables
                                 children: <Widget>[
-                                  new Text(
+                                  const Text(
                                     'Email ID',
                                     style: TextStyle(
                                         fontSize: 16.0,
@@ -217,8 +220,8 @@ class MapScreenState extends State<ProfilePage>
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 mainAxisSize: MainAxisSize.min,
                                 children: <Widget>[
-                                  new Text(
-                                    '',
+                                  const Text(
+                                    'Mobile',
                                     style: TextStyle(
                                         fontSize: 16.0,
                                         fontWeight: FontWeight.bold),
@@ -254,7 +257,6 @@ class MapScreenState extends State<ProfilePage>
     ));
   }
 
-  @override
   void dispose() {
     // Clean up the controller when the Widget is disposed
     myFocusNode.dispose();
@@ -273,7 +275,7 @@ class MapScreenState extends State<ProfilePage>
               padding: EdgeInsets.only(right: 10.0),
               child: Container(
                   child: new RaisedButton(
-                child: new Text("Save"),
+                child: const Text("Save"),
                 textColor: Colors.white,
                 color: Colors.green,
                 onPressed: () {
@@ -293,7 +295,7 @@ class MapScreenState extends State<ProfilePage>
               padding: EdgeInsets.only(left: 10.0),
               child: Container(
                   child: new RaisedButton(
-                child: new Text("Cancel"),
+                child: const Text("Cancel"),
                 textColor: Colors.white,
                 color: Colors.red,
                 onPressed: () {
@@ -315,10 +317,10 @@ class MapScreenState extends State<ProfilePage>
 
   Widget _getEditIcon() {
     return new GestureDetector(
-      child: new CircleAvatar(
+      child: const CircleAvatar(
         backgroundColor: Colors.red,
         radius: 14.0,
-        child: new Icon(
+        child: Icon(
           Icons.edit,
           color: Colors.white,
           size: 16.0,
