@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,7 @@ class _ProfilePageState extends State<ProfilePage>
   File? _image;
   final imagePicker = ImagePicker();
   String? downloadURL;
+  TextEditingController nameController = TextEditingController();
 
 // picking the image
 
@@ -41,9 +43,18 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   //Uploading Image
-  Future UploadImageMethod(File img) async {
+  Future UploadImageMethod(
+    File img,
+  ) async {
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
     Reference reference = FirebaseStorage.instance.ref().child("Images");
     await reference.putFile(img);
+    widget.edituser.imagePath = await reference.getDownloadURL();
+    widget.edituser.firstName = nameController.text;
+
+    await firebaseFirestore.collection("users").doc(widget.edituser.uid).update(
+          widget.edituser.toMap(),
+        );
   }
 
   @override
@@ -102,8 +113,7 @@ class _ProfilePageState extends State<ProfilePage>
                                   image: DecorationImage(
                                       image: (_image == null)
                                           ? AssetImage('images/as.png')
-                                          : Image.file(_image!)
-                                              as ImageProvider,
+                                          : FileImage(_image!) as ImageProvider,
                                       fit: BoxFit.cover),
                                 )),
                           ],
@@ -199,6 +209,7 @@ class _ProfilePageState extends State<ProfilePage>
                             children: <Widget>[
                               new Flexible(
                                 child: new TextField(
+                                  controller: nameController,
                                   decoration: const InputDecoration(
                                     hintText: "Enter Name",
                                   ),
@@ -314,6 +325,7 @@ class _ProfilePageState extends State<ProfilePage>
                 color: Colors.green,
                 onPressed: () {
                   setState(() {
+                    UploadImageMethod(_image!);
                     _status = true;
                     FocusScope.of(context).requestFocus(new FocusNode());
                   });

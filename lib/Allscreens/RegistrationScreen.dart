@@ -222,6 +222,7 @@ class RegisterationScreen extends StatelessWidget {
     userModel.cnic = cnicTextEditingController.text;
     userModel.mobileNo = mobileTextEditingController.text;
     userModel.password = passTextEditingController.text;
+    userModel.imagePath = "";
 
     await firebaseFirestore
         .collection("users")

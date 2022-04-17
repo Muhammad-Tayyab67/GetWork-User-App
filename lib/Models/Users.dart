@@ -7,6 +7,7 @@ class UserModel {
   String? cityName;
   String? cnic;
   String? mobileNo;
+  String? imagePath;
 
   UserModel(
       {this.uid,
@@ -16,7 +17,8 @@ class UserModel {
       this.cnic,
       this.cityName,
       this.mobileNo,
-      this.password});
+      this.password,
+      this.imagePath});
 
   // receiving data from server
   factory UserModel.fromMap(map) {
@@ -28,7 +30,8 @@ class UserModel {
         cnic: map['cnic'],
         cityName: map['cityName'],
         mobileNo: map['mobileNo'],
-        password: map['password']);
+        password: map['password'],
+        imagePath: map['imagePath']);
   }
 
   // sending data to our server
@@ -41,7 +44,8 @@ class UserModel {
       'cnic': cnic,
       'mobileNo': mobileNo,
       'cityName': cityName,
-      'password': password
+      'password': password,
+      'imagePath': imagePath,
     };
   }
 }

@@ -124,6 +124,7 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
   //initial state to retrieve Logedin user Details
   User? user = FirebaseAuth.instance.currentUser;
   UserModel loggedInUser = UserModel();
+  String profilepic = "";
   @override
   void initState() {
     super.initState();
@@ -133,7 +134,9 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
         .get()
         .then((value) {
       this.loggedInUser = UserModel.fromMap(value.data());
-      setState(() {});
+      setState(() {
+        profilepic = loggedInUser.imagePath.toString();
+      });
     });
   }
 
@@ -158,11 +161,16 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
                   ),
                   child: Row(
                     children: [
-                      CircleAvatar(
-                        child: Image.network(
-                          "https://avatars.githubusercontent.com/u/95230366?v=4",
-                          height: 77.0,
-                          width: 90.0,
+                      Container(
+                        height: 60.0,
+                        width: 40.0,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                              image: (profilepic == "")
+                                  ? AssetImage('images/as.png')
+                                  : Image.network(profilepic) as ImageProvider,
+                              fit: BoxFit.cover),
                         ),
                       ),
                       SizedBox(
