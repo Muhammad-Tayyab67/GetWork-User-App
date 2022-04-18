@@ -167,10 +167,11 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           image: DecorationImage(
-                              image: (profilepic == "")
-                                  ? AssetImage('images/as.png')
-                                  : Image.network(profilepic) as ImageProvider,
-                              fit: BoxFit.cover),
+                            image: (profilepic == "")
+                                ? AssetImage('images/as.png')
+                                : NetworkImage(profilepic) as ImageProvider,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                       SizedBox(
@@ -182,7 +183,7 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
                             height: 25.0,
                           ),
                           Text(
-                            "${loggedInUser.firstName}",
+                            "${loggedInUser.firstName?.toUpperCase()}",
                             style: TextStyle(fontSize: 18.0),
                           ),
                           SizedBox(

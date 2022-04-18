@@ -1,4 +1,4 @@
-// ignore_for_file: unnecessary_new, prefer_const_constructors, prefer_const_literals_to_create_immutables
+// ignore_for_file: unnecessary_new, prefer_const_constructors, prefer_const_literals_to_create_immutables, unnecessary_cast
 
 import 'dart:io';
 
@@ -23,16 +23,22 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage>
     with SingleTickerProviderStateMixin {
   bool _status = true;
+
   final FocusNode myFocusNode = FocusNode();
   File? _image;
   final imagePicker = ImagePicker();
   String? downloadURL;
+
   TextEditingController nameController = TextEditingController();
 
 // picking the image
 
   Future imagePickerMethod() async {
-    final pick = await imagePicker.pickImage(source: ImageSource.gallery);
+    final pick = await imagePicker.pickImage(
+        source: ImageSource.gallery,
+        maxHeight: 60,
+        maxWidth: 40,
+        imageQuality: 100);
     setState(() {
       if (pick != null) {
         _image = File(pick.path);
@@ -89,7 +95,8 @@ class _ProfilePageState extends State<ProfilePage>
                             ),
                             Padding(
                               padding: EdgeInsets.only(left: 25.0),
-                              child: Text('${widget.edituser.firstName}',
+                              child: Text(
+                                  '${widget.edituser.firstName?.toUpperCase()}',
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 20.0,
@@ -111,33 +118,19 @@ class _ProfilePageState extends State<ProfilePage>
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   image: DecorationImage(
-                                      image: (_image == null)
-                                          ? AssetImage('images/as.png')
-                                          : FileImage(_image!) as ImageProvider,
+                                      image: (widget.edituser.imagePath == null)
+                                          ? (AssetImage('images/as.png'))
+                                          : (FileImage(_image!)
+                                              as ImageProvider),
                                       fit: BoxFit.cover),
                                 )),
                           ],
                         ),
-                        Padding(
-                            padding: EdgeInsets.only(top: 90.0, right: 100.0),
-                            child: new Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                GestureDetector(
-                                  onTap: (() {
-                                    imagePickerMethod();
-                                  }),
-                                  child: const CircleAvatar(
-                                    backgroundColor: Colors.red,
-                                    radius: 25.0,
-                                    child: Icon(
-                                      Icons.camera_alt,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                )
-                              ],
-                            )),
+                        !_status
+                            ? _getCamIcon()
+                            : Padding(
+                                padding: EdgeInsets.only(),
+                              ),
                       ]),
                     )
                   ],
@@ -306,6 +299,29 @@ class _ProfilePageState extends State<ProfilePage>
     // Clean up the controller when the Widget is disposed
     myFocusNode.dispose();
     super.dispose();
+  }
+
+  Widget _getCamIcon() {
+    return Padding(
+        padding: EdgeInsets.only(top: 90.0, right: 100.0),
+        child: new Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            GestureDetector(
+              onTap: (() {
+                imagePickerMethod();
+              }),
+              child: const CircleAvatar(
+                backgroundColor: Colors.red,
+                radius: 25.0,
+                child: Icon(
+                  Icons.camera_alt,
+                  color: Colors.white,
+                ),
+              ),
+            )
+          ],
+        ));
   }
 
   Widget _getActionButtons() {
