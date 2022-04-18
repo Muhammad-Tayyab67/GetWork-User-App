@@ -35,10 +35,7 @@ class _ProfilePageState extends State<ProfilePage>
 
   Future imagePickerMethod() async {
     final pick = await imagePicker.pickImage(
-        source: ImageSource.gallery,
-        maxHeight: 60,
-        maxWidth: 40,
-        imageQuality: 100);
+        source: ImageSource.gallery, imageQuality: 85);
     setState(() {
       if (pick != null) {
         _image = File(pick.path);
@@ -118,7 +115,7 @@ class _ProfilePageState extends State<ProfilePage>
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   image: DecorationImage(
-                                      image: (widget.edituser.imagePath == null)
+                                      image: (_image == null)
                                           ? (AssetImage('images/as.png'))
                                           : (FileImage(_image!)
                                               as ImageProvider),
