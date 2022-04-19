@@ -1,4 +1,4 @@
-// ignore_for_file: unnecessary_new, prefer_const_constructors, prefer_const_literals_to_create_immutables, unnecessary_cast
+// ignore_for_file: unnecessary_new, prefer_const_constructors, prefer_const_literals_to_create_immutables, unnecessary_cast, non_constant_identifier_names
 
 import 'dart:io';
 
@@ -23,20 +23,23 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage>
     with SingleTickerProviderStateMixin {
   bool _status = true;
-
+  bool editstatus = true;
+  FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
   final FocusNode myFocusNode = FocusNode();
   File? _image;
   final imagePicker = ImagePicker();
   String? downloadURL;
 
   TextEditingController nameController = TextEditingController();
-
+  TextEditingController mobileupdateController = TextEditingController();
+  TextEditingController emailupdateController = TextEditingController();
 // picking the image
 
   Future imagePickerMethod() async {
     final pick = await imagePicker.pickImage(
         source: ImageSource.gallery, imageQuality: 85);
     setState(() {
+      editstatus = false;
       if (pick != null) {
         _image = File(pick.path);
       } else {
@@ -49,15 +52,38 @@ class _ProfilePageState extends State<ProfilePage>
   Future UploadImageMethod(
     File img,
   ) async {
-    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
-    Reference reference = FirebaseStorage.instance.ref().child("Images");
+    final imgId = DateTime.now().millisecondsSinceEpoch.toString();
+    Reference reference = FirebaseStorage.instance
+        .ref()
+        .child("${widget.edituser.uid}/Images")
+        .child("post_$imgId");
     await reference.putFile(img);
     widget.edituser.imagePath = await reference.getDownloadURL();
-    widget.edituser.firstName = nameController.text;
+  }
 
-    await firebaseFirestore.collection("users").doc(widget.edituser.uid).update(
-          widget.edituser.toMap(),
-        );
+  Future UpdateDATA() async {
+    if (nameController.text.length < 2) {
+      Fluttertoast.showToast(msg: "Please Enter Name..");
+    }
+    if (mobileupdateController.text.length < 11) {
+      Fluttertoast.showToast(msg: "Wrong Number");
+    }
+    if (!emailupdateController.text.contains("@gmail.com")) {
+      Fluttertoast.showToast(msg: "Envalid Email");
+    } else {
+      widget.edituser.firstName = nameController.text;
+      widget.edituser.email = emailupdateController.text;
+      widget.edituser.mobileNo = mobileupdateController.text;
+      await firebaseFirestore
+          .collection("users")
+          .doc(widget.edituser.uid)
+          .update(
+            widget.edituser.toMap(),
+          );
+      setState(() {
+        _status = true;
+      });
+    }
   }
 
   @override
@@ -125,6 +151,11 @@ class _ProfilePageState extends State<ProfilePage>
                         ),
                         !_status
                             ? _getCamIcon()
+                            : Padding(
+                                padding: EdgeInsets.only(),
+                              ),
+                        !editstatus
+                            ? _getOKIcon(_image!)
                             : Padding(
                                 padding: EdgeInsets.only(),
                               ),
@@ -238,6 +269,7 @@ class _ProfilePageState extends State<ProfilePage>
                             children: <Widget>[
                               new Flexible(
                                 child: new TextField(
+                                  controller: emailupdateController,
                                   decoration: const InputDecoration(
                                       hintText: "Enter Email ID"),
                                   enabled: !_status,
@@ -273,6 +305,7 @@ class _ProfilePageState extends State<ProfilePage>
                             children: <Widget>[
                               new Flexible(
                                 child: new TextField(
+                                  controller: mobileupdateController,
                                   decoration: const InputDecoration(
                                       hintText: "Enter Mobile Number"),
                                   enabled: !_status,
@@ -307,12 +340,39 @@ class _ProfilePageState extends State<ProfilePage>
             GestureDetector(
               onTap: (() {
                 imagePickerMethod();
+                editstatus = false;
               }),
               child: const CircleAvatar(
                 backgroundColor: Colors.red,
                 radius: 25.0,
                 child: Icon(
                   Icons.camera_alt,
+                  color: Colors.white,
+                ),
+              ),
+            )
+          ],
+        ));
+  }
+
+  Widget _getOKIcon(File img) {
+    return Padding(
+        padding: EdgeInsets.only(top: 90.0, right: 100.0),
+        child: new Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            GestureDetector(
+              onTap: (() async {
+                UploadImageMethod(_image!);
+                setState(() {
+                  editstatus = true;
+                });
+              }),
+              child: const CircleAvatar(
+                backgroundColor: Color.fromARGB(255, 78, 248, 35),
+                radius: 25.0,
+                child: Icon(
+                  Icons.check_outlined,
                   color: Colors.white,
                 ),
               ),
@@ -338,8 +398,7 @@ class _ProfilePageState extends State<ProfilePage>
                 color: Colors.green,
                 onPressed: () {
                   setState(() {
-                    UploadImageMethod(_image!);
-                    _status = true;
+                    UpdateDATA();
                     FocusScope.of(context).requestFocus(new FocusNode());
                   });
                 },
