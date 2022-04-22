@@ -1,4 +1,4 @@
-// ignore_for_file: unnecessary_new, prefer_const_constructors, prefer_const_literals_to_create_immutables, unnecessary_cast, non_constant_identifier_names
+// ignore_for_file: unnecessary_new, prefer_const_constructors, prefer_const_literals_to_create_immutables, unnecessary_cast, non_constant_identifier_names, duplicate_ignore
 
 import 'dart:io';
 
@@ -288,7 +288,7 @@ class _ProfilePageState extends State<ProfilePage>
                                 mainAxisSize: MainAxisSize.min,
                                 children: <Widget>[
                                   const Text(
-                                    'Mobile',
+                                    'Mobile No',
                                     style: TextStyle(
                                         fontSize: 16.0,
                                         fontWeight: FontWeight.bold),
