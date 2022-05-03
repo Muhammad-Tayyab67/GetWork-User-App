@@ -8,13 +8,16 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:getwork/Allscreens/RegistrationScreen.dart';
 import 'package:getwork/Allscreens/loginscreen.dart';
 import 'package:getwork/Allscreens/profilePage.dart';
 import 'package:getwork/Allscreens/searchScreen.dart';
+import 'package:getwork/Assitants/geoFireAssintants.dart';
 import 'package:getwork/Datahandler/appdata.dart';
+import 'package:getwork/Models/nearbylabour.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -37,7 +40,9 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
   late Position currentPosition;
 
   var geolocator = Geolocator();
-
+  Set<Marker> markerSet = {};
+  BitmapDescriptor? avtiveLabouricon;
+  bool labourlodedonmapcheck = false;
   double bottempadding = 0.0;
 //Current location Function
   void locatePosition() async {
@@ -77,6 +82,7 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
 
     String Address =
         await AssistantMethods.searchCoordinateAddress(position, context);
+    GeofireOnlinelabours();
   }
 
 //Initial Location
@@ -142,6 +148,7 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    CreatActiveLabouricon();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black87,
@@ -248,6 +255,7 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
             myLocationButtonEnabled: true,
             zoomControlsEnabled: true,
             zoomGesturesEnabled: true,
+            markers: markerSet,
             onMapCreated: (GoogleMapController Controller) {
               _controllerGooglrMap.complete(Controller);
               newgoogleMapController = Controller;
@@ -497,6 +505,7 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
                               GestureDetector(
                                 onTap: () {
                                   switchcontainer("req");
+                                  GeofireOnlinelabours();
                                 },
                                 child: Icon(
                                   Icons.send,
@@ -658,6 +667,89 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
       Fluttertoast.showToast(msg: er.toString());
       Navigator.pop(context);
       print(er);
+    }
+  }
+
+  void GeofireOnlinelabours() {
+    Geofire.initialize("availableLabours");
+//start
+    Geofire.queryAtLocation(
+            currentPosition.latitude, currentPosition.longitude, 100)!
+        .listen((map) {
+      print(map);
+      if (map != null) {
+        var callBack = map['callBack'];
+
+        //latitude will be retrieved from map['latitude']
+        //longitude will be retrieved from map['longitude']
+
+        switch (callBack) {
+          case Geofire.onKeyEntered:
+            nearbyLabours onlinelabour = nearbyLabours();
+            onlinelabour.key = map['key'];
+            onlinelabour.labourlatd = map['latitude'];
+            onlinelabour.labourlong = map['longitude'];
+            GeofireAssistants.OnlineLaboursList.add(onlinelabour);
+            updateLabourOnMap();
+            break;
+
+          case Geofire.onKeyExited:
+            GeofireAssistants.RemoveLabourfromlist(map['key']);
+            updateLabourOnMap();
+
+            break;
+
+          case Geofire.onKeyMoved:
+            nearbyLabours onlinelabour = nearbyLabours();
+            onlinelabour.key = map['key'];
+            onlinelabour.labourlatd = map['latitude'];
+            onlinelabour.labourlong = map['longitude'];
+            GeofireAssistants.UpdateLabourfromlist(onlinelabour);
+            updateLabourOnMap();
+
+            // Update your key's location
+            break;
+
+          case Geofire.onGeoQueryReady:
+            updateLabourOnMap();
+            // All Intial Data is loaded
+
+            break;
+        }
+      }
+
+      setState(() {});
+    });
+
+//end
+  }
+
+  void updateLabourOnMap() {
+    Set<Marker> Lmarker = Set<Marker>();
+    for (nearbyLabours labours in GeofireAssistants.OnlineLaboursList) {
+      LatLng labourAvailableLocation =
+          LatLng(labours.labourlatd, labours.labourlong);
+      Marker marker = Marker(
+        markerId: MarkerId('labour${labours.key}'),
+        position: labourAvailableLocation,
+        icon: avtiveLabouricon!,
+        rotation: GeofireAssistants.createrandomNumber(360),
+        anchor: Offset(0.5, 1.0),
+      );
+      Lmarker.add(marker);
+    }
+    setState(() {
+      markerSet = Lmarker;
+    });
+  }
+
+  void CreatActiveLabouricon() {
+    if (avtiveLabouricon == null) {
+      ImageConfiguration imageConfiguration =
+          createLocalImageConfiguration(context, size: Size(1.0, 1.0));
+      BitmapDescriptor.fromAssetImage(
+              imageConfiguration, "images/ActiveLabour.png")
+          .then((value) => {avtiveLabouricon = value});
     }
   }
 }

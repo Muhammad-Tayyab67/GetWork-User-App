@@ -51,6 +51,8 @@ dependencies:
   cloud_firestore: ^3.1.11
   image_picker: ^0.8.5
   firebase_storage: ^10.2.12
+  flutter_geofire: ^2.0.1
+
 
   
  
@@ -92,6 +94,7 @@ flutter:
      - images/currentlocation.png
      - images/Puncharman1.jpg
      - images/as.png
+     - images/ActiveLabour.png 
      
 
   # An image asset can refer to one or more resolution-specific "variants", see
