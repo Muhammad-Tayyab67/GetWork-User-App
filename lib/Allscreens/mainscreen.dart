@@ -3,11 +3,13 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, camel_case_types, prefer_final_fields, unnecessary_new, sized_box_for_whitespace, prefer_const_constructors_in_immutables, non_constant_identifier_names, duplicate_ignore, unused_local_variable, unnecessary_null_comparison, import_of_legacy_library_into_null_safe, prefer_typing_uninitialized_variables, deprecated_member_use
 
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
@@ -20,7 +22,7 @@ import 'package:getwork/Datahandler/appdata.dart';
 import 'package:getwork/Models/nearbylabour.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
-
+import 'dart:ui' as ui;
 import '../AllWidgets/progressDialog.dart';
 import '../Assitants/FetchingAddress.dart';
 import '../Models/Users.dart';
@@ -42,6 +44,7 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
   var geolocator = Geolocator();
   Set<Marker> markerSet = {};
   BitmapDescriptor? avtiveLabouricon;
+  Uint8List? markerIcon;
   bool labourlodedonmapcheck = false;
   double bottempadding = 0.0;
 //Current location Function
@@ -732,8 +735,8 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
       Marker marker = Marker(
         markerId: MarkerId('labour${labours.key}'),
         position: labourAvailableLocation,
-        icon: avtiveLabouricon!,
-        rotation: GeofireAssistants.createrandomNumber(360),
+        icon: BitmapDescriptor.fromBytes(markerIcon!),
+        rotation: 0.0,
         anchor: Offset(0.5, 1.0),
       );
       Lmarker.add(marker);
@@ -743,13 +746,22 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
     });
   }
 
-  void CreatActiveLabouricon() {
-    if (avtiveLabouricon == null) {
-      ImageConfiguration imageConfiguration =
-          createLocalImageConfiguration(context, size: Size(1.0, 1.0));
-      BitmapDescriptor.fromAssetImage(
-              imageConfiguration, "images/ActiveLabour.png")
-          .then((value) => {avtiveLabouricon = value});
-    }
+  void CreatActiveLabouricon() async {
+    final Uint8List markerIcons =
+        await getBytesFromAsset('images/ActiveLabour.png', 100);
+
+    setState(() {
+      markerIcon = markerIcons;
+    });
+  }
+
+  Future<Uint8List> getBytesFromAsset(String path, int width) async {
+    ByteData data = await rootBundle.load(path);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
+        targetWidth: width);
+    ui.FrameInfo fi = await codec.getNextFrame();
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!
+        .buffer
+        .asUint8List();
   }
 }
