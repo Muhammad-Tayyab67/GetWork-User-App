@@ -7,13 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:getwork/Allscreens/loginscreen.dart';
+import 'package:getwork/DBconnenction.dart';
 import 'package:getwork/Models/Users.dart';
 
 import '../AllWidgets/progressDialog.dart';
 
 // ignore: must_be_immutable
 class RegisterationScreen extends StatelessWidget {
-  final _auth = FirebaseAuth.instance;
   static const String idScreen = "register";
   TextEditingController fnameTextEditingController = TextEditingController();
   TextEditingController lnameTextEditingController = TextEditingController();
@@ -32,7 +32,7 @@ class RegisterationScreen extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: Column(children: [
             Image.asset(
-              "images/sexylogo.jpeg",
+              "images/applogo.jpeg",
               alignment: Alignment.center,
               height: 200,
             ),
@@ -146,7 +146,7 @@ class RegisterationScreen extends StatelessWidget {
                             "Email should conatain more then @gmail.. alphabets",
                             context);
                       } else {
-                        signUp(emailTextEditingController.text,
+                        DBconnecntion().signUp(emailTextEditingController.text,
                             passTextEditingController.text, context);
                       }
                     },
@@ -185,31 +185,13 @@ class RegisterationScreen extends StatelessWidget {
     );
   }
 
-  void signUp(String email, String password, BuildContext context) async {
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return ProgressDialog(
-            message: "Please Wait . . . .",
-          );
-        });
-
-    await _auth
-        .createUserWithEmailAndPassword(email: email, password: password)
-        .then((value) => {postDetailsToFirestore(context)})
-        .catchError((e) {
-      diplaymessage(e.toString(), context);
-    });
-  }
-
-  postDetailsToFirestore(BuildContext context) async {
+  postDetailsToFirestore(BuildContext context, FirebaseAuth auth) async {
     // calling our firestore
     // calling our user model
     // sedning these values
 
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
-    User? user = _auth.currentUser;
+    User? user = auth.currentUser;
 
     UserModel userModel = UserModel();
 

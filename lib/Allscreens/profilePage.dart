@@ -59,6 +59,9 @@ class _ProfilePageState extends State<ProfilePage>
         .child("post_$imgId");
     await reference.putFile(img);
     widget.edituser.imagePath = await reference.getDownloadURL();
+    await firebaseFirestore.collection("users").doc(widget.edituser.uid).update(
+          widget.edituser.toMap(),
+        );
   }
 
   Future UpdateDATA() async {

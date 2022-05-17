@@ -1,8 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_constructors_in_immutables, file_names
 
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:getwork/Assitants/requestAssitant.dart';
 import 'package:getwork/Config.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:provider/provider.dart';

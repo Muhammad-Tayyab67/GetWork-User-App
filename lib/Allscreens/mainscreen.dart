@@ -659,7 +659,7 @@ class _mainscreenState extends State<mainscreen> with TickerProviderStateMixin {
         barrierDismissible: false,
         builder: (BuildContext context) {
           return ProgressDialog(
-            message: "Loging in.. Please Wait . . . .",
+            message: "Loging out.. Please Wait . . . .",
           );
         });
     try {
